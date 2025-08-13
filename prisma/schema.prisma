@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------
+// ENUMS
+// ----------------------
+enum UserRole {
+  ENG_PE
+  ENG_SE
+  ENG_LEAD
+  PM
+  ADMIN
+}
+
+enum Department {
+  Delivery
+  Service
+}
+
+enum ExecutionStatus {
+  LAGGING
+  ONTRACK
+  LEADING
+}
+
+// ----------------------
+// MODELS
+// ----------------------
+
+model Phase {
+  id           Int       @id @default(autoincrement())
+  phaseCode    String    @unique      // e.g., "salesHandover"
+  phaseName    String
+  weightFactor Float
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  projectsCurrent Project[]         @relation("ProjectCurrentPhase")
+  timesheets      TimesheetReport[]
+  progressReports ProgressReport[]
+}
+
+model User {
+  id           Int                      @id @default(autoincrement())
+  name         String
+  code         String                   @unique
+  userRole     UserRole
+  passwordHash String
+  dept         Department
+  joinAt       DateTime
+  isResigned   Boolean                  @default(false)
+  resignedAt   DateTime?
+  tokens       String?
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  lastLogin    DateTime?                @default(now())
+
+  // Relations
+  pmProjects   Project[] @relation("PMProjects")
+  peProjects   Project[] @relation("PEProjects")
+  seProjects   Project[] @relation("SEProjects")
+  assignments  UserProjectsAssignment[]
+  timesheets   TimesheetReport[]
+  progress     ProgressReport[]
+}
+
+model Project {
+  id              Int                     @id @default(autoincrement())
+  pjtNo           String                  @unique
+  pjtName         String
+  epcName         String
+  ownerName       String
+
+  assignedPMId    Int?
+  assignedPEId    Int?
+  assignedSEId    Int?
+  currentPhaseId  Int?
+  executionStatus ExecutionStatus
+  isFinished      Boolean                 @default(false)
+
+  timeStart       DateTime
+  timeEnd         DateTime
+
+  // Phase milestone dates
+  phase1EndDate   DateTime?
+  phase2EndDate   DateTime?
+  phase3EndDate   DateTime?
+  phase4EndDate   DateTime?
+  phase5EndDate   DateTime?
+  phase6EndDate   DateTime?
+  phase7EndDate   DateTime?
+  phase8EndDate   DateTime?
+  phase9EndDate   DateTime?
+
+  // Relations
+  assignedPM      User?   @relation("PMProjects", fields: [assignedPMId], references: [id])
+  assignedPE      User?   @relation("PEProjects", fields: [assignedPEId], references: [id])
+  assignedSE      User?   @relation("SEProjects", fields: [assignedSEId], references: [id])
+  currentPhase    Phase?  @relation("ProjectCurrentPhase", fields: [currentPhaseId], references: [id])
+
+  assignments     UserProjectsAssignment[]
+  timesheets      TimesheetReport[]
+  progressReports ProgressReport[]
+}
+
+model UserProjectsAssignment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  projectId Int
+  assignedAt DateTime @default(now())
+
+  // Relations
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId]) // prevent duplicate assignments
+}
+
+model TimesheetReport {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  projectId   Int
+  pjtPhaseId  Int
+  reportDate  DateTime
+  hoursPerDay Decimal  @db.Decimal(5,2) // safer than float
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  phase   Phase   @relation(fields: [pjtPhaseId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, projectId, pjtPhaseId, reportDate]) // avoid duplicates
+}
+
+model ProgressReport {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  projectId     Int
+  pjtPhaseId    Int
+  reportDate    DateTime
+  thisWeekTask  String
+  thisWeekIssue String
+  nextWeekTask  String
+  advancePhase  Boolean
+  createdAt     DateTime @default(now())
+
+  // Relations
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  phase   Phase   @relation(fields: [pjtPhaseId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, projectId, pjtPhaseId, reportDate]) // prevent duplicates
+}
