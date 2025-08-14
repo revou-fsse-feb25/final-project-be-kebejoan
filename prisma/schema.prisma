@@ -60,11 +60,11 @@ model User {
   userRole     UserRole
   passwordHash String
   dept         Department
-  joinAt       DateTime
-  isResigned   Boolean                  @default(false)
-  resignedAt   DateTime?
+  joinAt       DateTime                 @db.Date                                                            
+  isResigned   Boolean                  @default(false)                 
+  resignedAt   DateTime?                @db.Date
   tokens       String?
-  createdAt    DateTime                 @default(now())
+  createdAt    DateTime                 @default(now())                         
   updatedAt    DateTime                 @updatedAt
   lastLogin    DateTime?                @default(now())
 
@@ -95,15 +95,15 @@ model Project {
   timeEnd         DateTime
 
   // Phase milestone dates
-  phase1EndDate   DateTime?
-  phase2EndDate   DateTime?
-  phase3EndDate   DateTime?
-  phase4EndDate   DateTime?
-  phase5EndDate   DateTime?
-  phase6EndDate   DateTime?
-  phase7EndDate   DateTime?
-  phase8EndDate   DateTime?
-  phase9EndDate   DateTime?
+  phase1EndDate   DateTime?               @db.Date
+  phase2EndDate   DateTime?               @db.Date
+  phase3EndDate   DateTime?               @db.Date
+  phase4EndDate   DateTime?               @db.Date
+  phase5EndDate   DateTime?               @db.Date
+  phase6EndDate   DateTime?               @db.Date
+  phase7EndDate   DateTime?               @db.Date
+  phase8EndDate   DateTime?               @db.Date
+  phase9EndDate   DateTime?               @db.Date
 
   // Relations
   assignedPM      User?   @relation("PMProjects", fields: [assignedPMId], references: [id])
@@ -134,7 +134,7 @@ model TimesheetReport {
   userId      Int
   projectId   Int
   pjtPhaseId  Int
-  reportDate  DateTime
+  reportDate  DateTime  @db.Date
   hoursPerDay Decimal  @db.Decimal(5,2) // safer than float
   createdAt   DateTime @default(now())
 
@@ -151,7 +151,7 @@ model ProgressReport {
   userId        Int
   projectId     Int
   pjtPhaseId    Int
-  reportDate    DateTime
+  reportDate    DateTime  @db.Date
   thisWeekTask  String
   thisWeekIssue String
   nextWeekTask  String

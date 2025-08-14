@@ -56,31 +56,31 @@ async function main() {
     // ENG_PE
     {
       name: 'Engineer PE 1',
-      code: 'PE001',
+      code: 'PE1',
       userRole: UserRole.ENG_PE,
       dept: Department.Delivery,
     },
     {
       name: 'Engineer PE 2',
-      code: 'PE002',
+      code: 'PE2',
       userRole: UserRole.ENG_PE,
       dept: Department.Delivery,
     },
     {
       name: 'Engineer PE 3',
-      code: 'PE003',
+      code: 'PE3',
       userRole: UserRole.ENG_PE,
       dept: Department.Delivery,
     },
     {
       name: 'Engineer PE 4',
-      code: 'PE004',
+      code: 'PE4',
       userRole: UserRole.ENG_PE,
       dept: Department.Service,
     },
     {
       name: 'Engineer PE 5',
-      code: 'PE005',
+      code: 'PE5',
       userRole: UserRole.ENG_PE,
       dept: Department.Service,
     },
@@ -88,31 +88,31 @@ async function main() {
     // ENG_SE
     {
       name: 'Engineer SE 1',
-      code: 'SE001',
+      code: 'SE1',
       userRole: UserRole.ENG_SE,
       dept: Department.Delivery,
     },
     {
       name: 'Engineer SE 2',
-      code: 'SE002',
+      code: 'SE2',
       userRole: UserRole.ENG_SE,
       dept: Department.Delivery,
     },
     {
       name: 'Engineer SE 3',
-      code: 'SE003',
+      code: 'SE3',
       userRole: UserRole.ENG_SE,
       dept: Department.Delivery,
     },
     {
       name: 'Engineer SE 4',
-      code: 'SE004',
+      code: 'SE4',
       userRole: UserRole.ENG_SE,
       dept: Department.Service,
     },
     {
       name: 'Engineer SE 5',
-      code: 'SE005',
+      code: 'SE5',
       userRole: UserRole.ENG_SE,
       dept: Department.Service,
     },
@@ -120,13 +120,13 @@ async function main() {
     // PM
     {
       name: 'Project Manager 1',
-      code: 'PM001',
+      code: 'PM1',
       userRole: UserRole.PM,
       dept: Department.Delivery,
     },
     {
       name: 'Project Manager 2',
-      code: 'PM002',
+      code: 'PM2',
       userRole: UserRole.PM,
       dept: Department.Delivery,
     },
@@ -134,13 +134,13 @@ async function main() {
     // ENG_LEAD
     {
       name: 'Lead Engineer 1',
-      code: 'LE001',
+      code: 'LE1',
       userRole: UserRole.ENG_LEAD,
       dept: Department.Delivery,
     },
     {
       name: 'Lead Engineer 2',
-      code: 'LE002',
+      code: 'LE2',
       userRole: UserRole.ENG_LEAD,
       dept: Department.Delivery,
     },
@@ -148,7 +148,7 @@ async function main() {
     // ADMIN
     {
       name: 'Admin User',
-      code: 'ADMIN001',
+      code: 'ADM',
       userRole: UserRole.ADMIN,
       dept: Department.Delivery,
     },
