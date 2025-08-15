@@ -39,19 +39,40 @@ export class UsersService {
     if (isExist) {
       throw new ConflictException('User already exists');
     }
-    const passwordHash = await hashPassword(createUserDto.passwordHash);
-    return this.usersRepository.create({
+    console.log(createUserDto);
+    const passwordHash = await hashPassword(createUserDto.password);
+    const modifiedUserDto = {
       ...createUserDto,
-      passwordHash,
-    });
+      passwordHash: passwordHash,
+      password: undefined,
+    };
+    return this.usersRepository.create(modifiedUserDto);
   }
 
   async update(id: number, updateUserDto: AdminUpdateUserDto): Promise<User> {
-    const isExist = await this.usersRepository.findOne(id);
-    if (!isExist) {
+    const isUserExist = await this.usersRepository.findOne(id);
+    if (!isUserExist) {
       throw new NotFoundException(`User #${id} is not found`);
     }
-    return this.usersRepository.update(id, updateUserDto);
+    if (updateUserDto.code) {
+      const isCodeExist = await this.usersRepository.findByCode(
+        updateUserDto.code
+      );
+      if (isCodeExist) {
+        throw new ConflictException('User already exists');
+      }
+    }
+    if (updateUserDto.password) {
+      const passwordHash = await hashPassword(updateUserDto.password);
+      const modifiedUserDto = {
+        ...updateUserDto,
+        passwordHash: passwordHash,
+        password: undefined,
+      };
+      return this.usersRepository.update(id, modifiedUserDto);
+    } else {
+      return this.usersRepository.update(id, updateUserDto);
+    }
   }
 
   async remove(id: number): Promise<CustomResponse> {
@@ -74,24 +95,4 @@ export class UsersService {
       };
     }
   }
-
-  // create(createUserDto: CreateUserDto) {
-  //   return 'This action adds a new user';
-  // }
-
-  // findAll() {
-  //   return `This action returns all users`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

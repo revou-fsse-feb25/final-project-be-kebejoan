@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserRole, Department } from '@prisma/client';
 import { Transform, Type } from 'class-transformer';
 import {
+  IsDate,
   IsEnum,
   IsString,
   Length,
@@ -47,7 +48,7 @@ export class AdminCreateUserDto {
     description: 'The password of the user',
     example: 'password123',
   })
-  passwordHash: string;
+  password: string;
 
   @IsEnum(Department, {
     message: 'Department must be one of ENG, SE, PM, ADMIN',
@@ -60,6 +61,7 @@ export class AdminCreateUserDto {
   dept: Department;
 
   @ApiProperty({ type: String, format: 'date', example: '2025-08-14' })
+  @IsDate()
   @Type(() => Date)
   @Transform(({ value }) => {
     const d = new Date(value);

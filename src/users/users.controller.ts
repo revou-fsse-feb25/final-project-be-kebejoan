@@ -40,7 +40,7 @@ export class UsersController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Get('check/:code')
+  @Get('/check/:code')
   async checkIfCodeExists(@Param('code') code: string) {
     return this.usersService.checkIfCodeExists(code);
   }
@@ -53,7 +53,7 @@ export class UsersController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Get('code/:code')
+  @Get('/code/:code')
   async findByCode(@Param('code') code: string) {
     const res = await this.usersService.findByCode(code);
     return plainToInstance(UserEntity, res);
@@ -69,7 +69,8 @@ export class UsersController {
   })
   @Post()
   async create(@Body() createUserDto: AdminCreateUserDto) {
-    return this.usersService.create(createUserDto);
+    const res = await this.usersService.create(createUserDto);
+    return plainToInstance(UserEntity, res);
   }
 
   @ApiOperation({ summary: 'Get all users [ADMIN ACCEESS]' })

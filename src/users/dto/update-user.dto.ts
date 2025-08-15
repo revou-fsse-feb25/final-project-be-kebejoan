@@ -10,10 +10,11 @@ import {
   IsEnum,
   IsBoolean,
   IsOptional,
+  IsDate,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
-export class AdminUpdateUserDto extends PartialType(AdminCreateUserDto) {
+export class AdminUpdateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(2, { message: 'Name must be at least 2 characters long' })
@@ -55,7 +56,7 @@ export class AdminUpdateUserDto extends PartialType(AdminCreateUserDto) {
     description: 'The password of the user',
     example: 'password123',
   })
-  passwordHash?: string;
+  password?: string;
 
   @IsOptional()
   @IsEnum(Department, {
@@ -79,6 +80,7 @@ export class AdminUpdateUserDto extends PartialType(AdminCreateUserDto) {
 
   @IsOptional()
   @ApiProperty({ type: String, format: 'date', example: '2025-08-14' })
+  @IsDate()
   @Type(() => Date)
   @Transform(({ value }) => {
     const d = new Date(value);
