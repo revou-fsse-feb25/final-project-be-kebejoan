@@ -9,3 +9,13 @@ export class CustomResponse<T = any> {
     this.data = data;
   }
 }
+
+export class CustomResponseCheck<T = any> {
+  exists: boolean;
+  data?: T;
+
+  constructor(exist: boolean, data?: T) {
+    this.exists = exist;
+    this.data = data;
+  }
+}

@@ -1,34 +1,118 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { ProjectEntity } from './entities/project.entity';
+import { CustomResponseCheck } from 'src/_common/res/response';
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
+  @ApiOperation({ summary: 'Check if pjtNo is exists' })
+  @ApiOkResponse({
+    description: 'Success check if pjtNo is exists',
+    type: CustomResponseCheck,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
+  @Get('pjtNo/:pjtNo/check')
+  async checkIfPjtNoExists(@Param('pjtNo') pjtNo: string) {
+    return this.projectsService.checkIfPjtNoExists(pjtNo);
+  }
+
+  @ApiOperation({ summary: 'Get one project by pjtNo [ADMIN/PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success get one project by pjtNo',
+    type: ProjectEntity,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
+  @Get('pjtNo/:pjtNo')
+  async findByPjtNo(@Param('pjtNo') pjtNo: string) {
+    return this.projectsService.findByPjtNo(pjtNo);
+  }
+
+  @ApiOperation({ summary: 'Create one project [ADMIN/PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success create one project',
+    type: ProjectEntity,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
+  async create(@Body() createProjectDto: CreateProjectDto) {
     return this.projectsService.create(createProjectDto);
   }
 
+  @ApiOperation({ summary: 'Get all projects [ADMIN/PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success get all projects',
+    type: [ProjectEntity],
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
   @Get()
-  findAll() {
+  async findAll() {
     return this.projectsService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get one project [ADMIN/PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success get one project',
+    type: ProjectEntity,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.projectsService.findOne(+id);
   }
 
+  @ApiOperation({ summary: 'Update one project [ADMIN/PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success update one project',
+    type: ProjectEntity,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateProjectDto: UpdateProjectDto
+  ) {
     return this.projectsService.update(+id, updateProjectDto);
   }
 
+  @ApiOperation({ summary: 'Delete one project [ADMIN/PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success delete one project',
+    type: ProjectEntity,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as Admin',
+  })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.projectsService.remove(+id);
   }
 }
