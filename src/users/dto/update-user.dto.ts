@@ -49,7 +49,7 @@ export class AdminUpdateUserDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MinLength(3, { message: 'Password must be at least 8 characters long' })
   @MaxLength(50, { message: 'Password must be at most 50 characters long' })
   @ApiProperty({
     type: String,
