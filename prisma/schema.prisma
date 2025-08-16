@@ -63,7 +63,7 @@ model User {
   joinAt       DateTime                 @db.Date                                                            
   isResigned   Boolean                  @default(false)                 
   resignedAt   DateTime?                @db.Date
-  tokens       String?
+  refreshToken String?
   createdAt    DateTime                 @default(now())                         
   updatedAt    DateTime                 @updatedAt
   lastLogin    DateTime?                @default(now())
