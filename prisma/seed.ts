@@ -7,6 +7,7 @@ import {
 } from '@prisma/client';
 // import { Decimal } from '@prisma/client/runtime/library';
 import { hashPassword } from '../src/_common/utils/hashing';
+import { Decimal } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -260,40 +261,40 @@ async function main() {
     });
   }
 
-  // console.log('Seeding timesheets & progress reports...');
+  console.log('Seeding timesheets & progress reports...');
 
-  // for (const project of allProjects) {
-  //   for (const userId of [project.assignedPEId!, project.assignedSEId!]) {
-  //     for (let phaseId = 1; phaseId <= 9; phaseId++) {
-  //       const reportDate = new Date(
-  //         `2024-06-${String(phaseId).padStart(2, '0')}`
-  //       );
+  for (const project of allProjects) {
+    for (const userId of [project.assignedPEId!, project.assignedSEId!]) {
+      for (let phaseId = 1; phaseId <= 9; phaseId++) {
+        const reportDate = new Date(
+          `2024-06-${String(phaseId).padStart(2, '0')}`
+        );
 
-  //       await prisma.timesheetReport.create({
-  //         data: {
-  //           userId,
-  //           projectId: project.id,
-  //           pjtPhaseId: phaseId,
-  //           reportDate,
-  //           hoursPerDay: new Decimal(8.0),
-  //         },
-  //       });
+        await prisma.timesheetReport.create({
+          data: {
+            userId,
+            projectId: project.id,
+            pjtPhaseId: phaseId,
+            reportDate,
+            hoursPerDay: new Decimal(8.0),
+          },
+        });
 
-  //       await prisma.progressReport.create({
-  //         data: {
-  //           userId,
-  //           projectId: project.id,
-  //           pjtPhaseId: phaseId,
-  //           reportDate,
-  //           thisWeekTask: `Task for phase ${phaseId}`,
-  //           thisWeekIssue: `Issue for phase ${phaseId}`,
-  //           nextWeekTask: `Next task for phase ${phaseId}`,
-  //           advancePhase: phaseId % 2 === 0,
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
+        await prisma.progressReport.create({
+          data: {
+            userId,
+            projectId: project.id,
+            pjtPhaseId: phaseId,
+            reportDate,
+            thisWeekTask: `Task for phase ${phaseId}`,
+            thisWeekIssue: `Issue for phase ${phaseId}`,
+            nextWeekTask: `Next task for phase ${phaseId}`,
+            advancePhase: phaseId % 2 === 0,
+          },
+        });
+      }
+    }
+  }
 
   console.log('✅ Seeding completed!');
 }
