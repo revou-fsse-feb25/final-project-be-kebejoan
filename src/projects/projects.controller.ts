@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import {
   ApiOkResponse,
@@ -17,6 +18,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectEntity } from './entities/project.entity';
 import { CustomResponseCheck } from 'src/_common/res/response';
+import { ProjectQueryDto } from './dto/query-project.dto';
 
 @Controller('projects')
 export class ProjectsController {
@@ -70,8 +72,8 @@ export class ProjectsController {
     description: 'Unauthorized or not logged in as Admin',
   })
   @Get()
-  async findAll() {
-    return this.projectsService.findAll();
+  async findAll(@Query() query?: ProjectQueryDto) {
+    return this.projectsService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Get one project [ADMIN/PM ACCEESS]' })

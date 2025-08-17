@@ -4,13 +4,14 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { ProjectsRepository } from './projects.repository';
 import { Project } from '@prisma/client';
 import { CustomResponse, CustomResponseCheck } from 'src/_common/res/response';
+import { ProjectQueryDto } from './dto/query-project.dto';
 
 @Injectable()
 export class ProjectsService {
   constructor(private readonly projectsRepository: ProjectsRepository) {}
 
-  async findAll(): Promise<Project[]> {
-    return this.projectsRepository.findAll();
+  async findAll(query?: ProjectQueryDto): Promise<Project[]> {
+    return this.projectsRepository.findAll(query);
   }
 
   async findOne(id: number): Promise<Project> {
