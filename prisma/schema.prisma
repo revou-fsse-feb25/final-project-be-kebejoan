@@ -143,7 +143,7 @@ model TimesheetReport {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   phase   Phase   @relation(fields: [pjtPhaseId], references: [id], onDelete: Restrict)
 
-  @@unique([userId, projectId, pjtPhaseId, reportDate]) // avoid duplicates
+  @@unique([userId, projectId, reportDate]) // avoid duplicates
 }
 
 model ProgressReport {
@@ -163,5 +163,5 @@ model ProgressReport {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   phase   Phase   @relation(fields: [pjtPhaseId], references: [id], onDelete: Restrict)
 
-  @@unique([userId, projectId, pjtPhaseId, reportDate]) // prevent duplicates
+  @@unique([userId, projectId, reportDate]) // prevent duplicates
 }
