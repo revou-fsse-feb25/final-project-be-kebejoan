@@ -24,7 +24,6 @@ export class ProgressController {
   })
   @Get()
   async findAll(@Query() query?: ReportQueryDto): Promise<ProgressReport[]> {
-    console.log('query:', query);
     return await this.progressService.findAll(query);
   }
 
