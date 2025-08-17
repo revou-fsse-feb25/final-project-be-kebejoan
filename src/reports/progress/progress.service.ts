@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProgressRepository } from './progress.repository';
 import { ProgressReport } from '@prisma/client';
-import { ReportQueryDto } from 'src/reports/dto/qeury-report.dto';
+import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { CustomResponse } from 'src/_common/res/response';
 import { CreateProgressDto } from './dto/create-progress.dto';
 import { UpdateProgressDto } from './dto/update-progress.dto';

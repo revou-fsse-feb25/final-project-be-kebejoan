@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, TimesheetReport } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
-import { ReportQueryDto } from 'src/reports/dto/qeury-report.dto';
+import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { CustomResponse } from 'src/_common/res/response';
 
 @Injectable()

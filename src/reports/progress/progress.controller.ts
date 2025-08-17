@@ -7,7 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
 import { ProgressReport } from '@prisma/client';
-import { ReportQueryDto } from 'src/reports/dto/qeury-report.dto';
+import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 
 @Controller('reports/progress')
 export class ProgressController {
