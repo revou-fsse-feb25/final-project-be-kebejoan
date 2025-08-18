@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   ClassSerializerInterceptor,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiOkResponse,
@@ -15,13 +16,18 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { AdminCreateUserDto } from './dto/create-user.dto';
-import { AdminUpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { plainToInstance } from 'class-transformer';
 import { CustomResponse } from 'src/_common/res/response';
+import { JwtAuthGuard } from 'src/_common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/_common/guards/role.guard';
+import { Roles } from 'src/_common/decorators/roles.decorator';
 
-@UseInterceptors(ClassSerializerInterceptor)
+// @UseInterceptors(ClassSerializerInterceptor)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('ADMIN')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -68,7 +74,7 @@ export class UsersController {
     description: 'Unauthorized or not logged in as Admin',
   })
   @Post()
-  async create(@Body() createUserDto: AdminCreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     const res = await this.usersService.create(createUserDto);
     return plainToInstance(UserEntity, res);
   }
@@ -111,10 +117,7 @@ export class UsersController {
     description: 'Unauthorized or not logged in as Admin',
   })
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: AdminUpdateUserDto
-  ) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const res = await this.usersService.update(+id, updateUserDto);
     return plainToInstance(UserEntity, res);
   }

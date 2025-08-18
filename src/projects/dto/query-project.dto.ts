@@ -20,17 +20,17 @@ export class ProjectQueryDto {
   @IsOptional()
   @Type(() => String)
   @IsString()
-  pmCode: string;
+  pmCode?: string;
 
   @IsOptional()
   @Type(() => String)
   @IsString()
-  seCode: string;
+  seCode?: string;
 
   @IsOptional()
   @Type(() => String)
   @IsString()
-  peCode: string;
+  peCode?: string;
 
   @IsOptional()
   @Type(() => Number)
@@ -46,5 +46,5 @@ export class ProjectQueryDto {
   OR?: any[];
 
   @IsOptional()
-  AND: any[];
+  AND?: any[];
 }

@@ -1,5 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { AdminCreateUserDto } from './create-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole, Department } from '@prisma/client';
 import {
@@ -14,7 +12,7 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
-export class AdminUpdateUserDto {
+export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(2, { message: 'Name must be at least 2 characters long' })

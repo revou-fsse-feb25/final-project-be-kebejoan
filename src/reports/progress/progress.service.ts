@@ -31,9 +31,15 @@ export class ProgressService {
   }
 
   async create(data: CreateProgressDto): Promise<ProgressReport> {
+    const modifiedData = {
+      ...data,
+      userId: undefined,
+      projectId: undefined,
+      pjtPhaseId: undefined,
+    };
     try {
       return await this.progressRepository.create({
-        ...data,
+        ...modifiedData,
         user: { connect: { id: data.userId } },
         project: { connect: { id: data.projectId } },
         phase: { connect: { id: data.pjtPhaseId } },

@@ -11,7 +11,11 @@ export class ProjectsService {
   constructor(private readonly projectsRepository: ProjectsRepository) {}
 
   async findAll(query?: ProjectQueryDto): Promise<Project[]> {
-    return this.projectsRepository.findAll(query);
+    const projects = await this.projectsRepository.findAll(query);
+    if (projects.length < 1) {
+      throw new NotFoundException('No data found');
+    }
+    return projects;
   }
 
   async findOne(id: number): Promise<Project> {

@@ -10,7 +10,7 @@ import {
   MinLength,
 } from 'class-validator';
 
-export class AdminCreateUserDto {
+export class CreateUserDto {
   @IsString()
   @MinLength(2, { message: 'Name must be at least 2 characters long' })
   @MaxLength(50, { message: 'Name must be at most 50 characters long' })

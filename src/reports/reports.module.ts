@@ -14,6 +14,11 @@ import { TimesheetService } from './timesheet/timesheet.service';
     ProgressRepository,
     TimesheetRepository,
   ],
-  exports: [ProgressService, TimesheetService],
+  exports: [
+    ProgressService,
+    TimesheetService,
+    ProgressRepository,
+    TimesheetRepository,
+  ],
 })
 export class ReportsModule {}

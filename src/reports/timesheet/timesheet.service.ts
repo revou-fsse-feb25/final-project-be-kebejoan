@@ -31,9 +31,15 @@ export class TimesheetService {
   }
 
   async create(data: CreateTimesheetDto): Promise<TimesheetReport> {
+    const modifiedData = {
+      ...data,
+      userId: undefined,
+      projectId: undefined,
+      pjtPhaseId: undefined,
+    };
     try {
       return await this.timesheetRepository.create({
-        ...data,
+        ...modifiedData,
         user: { connect: { id: data.userId } },
         project: { connect: { id: data.projectId } },
         phase: { connect: { id: data.pjtPhaseId } },

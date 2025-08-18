@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { AdminCreateUserDto } from './dto/create-user.dto';
-import { AdminUpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './users.repository';
 import { User } from '@prisma/client';
 import { hashPassword } from 'src/_common/utils/hashing';
@@ -34,12 +34,11 @@ export class UsersService {
     return user;
   }
 
-  async create(createUserDto: AdminCreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const isExist = await this.usersRepository.findByCode(createUserDto.code);
     if (isExist) {
       throw new ConflictException('User already exists');
     }
-    console.log(createUserDto);
     const passwordHash = await hashPassword(createUserDto.password);
     const modifiedUserDto = {
       ...createUserDto,
@@ -49,7 +48,7 @@ export class UsersService {
     return this.usersRepository.create(modifiedUserDto);
   }
 
-  async update(id: number, updateUserDto: AdminUpdateUserDto): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const isUserExist = await this.usersRepository.findOne(id);
     if (!isUserExist) {
       throw new NotFoundException(`User #${id} is not found`);
