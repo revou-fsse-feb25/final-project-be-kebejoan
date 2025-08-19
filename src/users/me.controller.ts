@@ -20,7 +20,7 @@ import { JwtAuthGuard } from 'src/_common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/_common/guards/role.guard';
 import { UsersMeService } from './me.service';
 import { CurrentUser } from 'src/_common/decorators/current-user.decorator';
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { Roles } from 'src/_common/decorators/roles.decorator';
 import { ProjectEntity } from 'src/projects/entities/project.entity';
 import { ProgressReportEntity } from 'src/reports/progress/entities/progress.entity';
@@ -43,7 +43,7 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('ENG_PE', 'ENG_SE')
+  @Roles(UserRole.ENG_PE, UserRole.ENG_SE)
   @Post('progress-reports')
   async reportProgress(
     @CurrentUser() user: User,
@@ -60,7 +60,7 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('ENG_PE', 'ENG_SE')
+  @Roles(UserRole.ENG_PE, UserRole.ENG_SE)
   @Post('timesheet-reports')
   async reportTimesheet(
     @CurrentUser() user: User,
@@ -78,7 +78,7 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('ENG_PE', 'ENG_SE')
+  @Roles(UserRole.ENG_PE, UserRole.ENG_SE)
   @Get('timesheet-reports')
   async myTimesheetReports(@CurrentUser() user: User) {
     return this.usersService.myTimesheetReports(user.id);
@@ -93,7 +93,7 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('ENG_PE', 'ENG_SE')
+  @Roles(UserRole.ENG_PE, UserRole.ENG_SE)
   @Get('progress-reports')
   async myProgressReports(@CurrentUser() user: User) {
     return this.usersService.myProgressReports(user.id);
@@ -108,7 +108,7 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('PM', 'ENG_PE', 'ENG_SE')
+  @Roles(UserRole.PM, UserRole.ENG_PE, UserRole.ENG_SE)
   @Get('projects')
   async myProjects(@CurrentUser() user: User) {
     return this.usersService.myProjects(user.code);
@@ -123,7 +123,13 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('ADMIN', 'PM', 'ENG_PE', 'ENG_SE', 'ENG_LEAD')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.PM,
+    UserRole.ENG_PE,
+    UserRole.ENG_SE,
+    UserRole.ENG_LEAD
+  )
   @Get()
   async findMe(@CurrentUser() user: User) {
     const res = await this.usersService.findOne(user.id);
@@ -138,7 +144,13 @@ export class UsersMeController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as User',
   })
-  @Roles('ADMIN', 'PM', 'ENG_PE', 'ENG_SE', 'ENG_LEAD')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.PM,
+    UserRole.ENG_PE,
+    UserRole.ENG_SE,
+    UserRole.ENG_LEAD
+  )
   @Patch()
   async update(
     @CurrentUser() user: User,

@@ -57,7 +57,13 @@ export class ProjectsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN', 'PM', 'ENG_PE', 'ENG_SE', 'ENG_LEAD')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.PM,
+    UserRole.ENG_PE,
+    UserRole.ENG_SE,
+    UserRole.ENG_LEAD
+  )
   @Get('pjtNo/:pjtNo')
   async findByPjtNo(@Param('pjtNo') pjtNo: string) {
     return this.projectsService.findByPjtNo(pjtNo);
@@ -71,7 +77,7 @@ export class ProjectsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN', 'PM')
+  @Roles(UserRole.ADMIN, UserRole.PM)
   @Post()
   async create(@Body() createProjectDto: CreateProjectDto) {
     return this.projectsService.create(createProjectDto);
@@ -85,7 +91,7 @@ export class ProjectsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN')
+  @Roles(UserRole.ADMIN)
   @Get()
   async findAll(@Query() query?: ProjectQueryDto) {
     return this.projectsService.findAll(query);
@@ -99,7 +105,13 @@ export class ProjectsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN', 'PM', 'ENG_PE', 'ENG_SE', 'ENG_LEAD')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.PM,
+    UserRole.ENG_PE,
+    UserRole.ENG_SE,
+    UserRole.ENG_LEAD
+  )
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.projectsService.findOne(+id);
@@ -113,7 +125,7 @@ export class ProjectsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN', 'PM')
+  @Roles(UserRole.ADMIN, UserRole.PM)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -130,7 +142,7 @@ export class ProjectsController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN')
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.projectsService.remove(+id);

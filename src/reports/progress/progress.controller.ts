@@ -41,7 +41,7 @@ export class ProgressController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN', 'PM')
+  @Roles(UserRole.ADMIN, UserRole.PM)
   @Get()
   async findAll(@Query() query?: ReportQueryDto): Promise<ProgressReport[]> {
     return await this.progressService.findAll(query);
@@ -55,7 +55,13 @@ export class ProgressController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized or not logged in as Admin',
   })
-  @Roles('ADMIN', 'PM', 'ENG_SE', 'ENG_PE', 'ENG_LEAD')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.PM,
+    UserRole.ENG_SE,
+    UserRole.ENG_PE,
+    UserRole.ENG_LEAD
+  )
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return await this.progressService.findOne(id);

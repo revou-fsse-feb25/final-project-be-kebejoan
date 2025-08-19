@@ -24,10 +24,11 @@ import { CustomResponse } from 'src/_common/res/response';
 import { JwtAuthGuard } from 'src/_common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/_common/guards/role.guard';
 import { Roles } from 'src/_common/decorators/roles.decorator';
+import { UserRole } from '@prisma/client';
 
 // @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('ADMIN')
+@Roles(UserRole.ADMIN)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
