@@ -18,7 +18,14 @@ async function bootstrap() {
     .setTitle('ENG TRACKER API')
     .setDescription('API documentation for ENG TRACKER API')
     .setVersion('1.0')
-    .addBearerAuth() // Optional: if you want JWT auth
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'refresh_token'
+    ) // Optional: if you want JWT auth
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

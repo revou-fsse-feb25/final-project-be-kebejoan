@@ -4,6 +4,7 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiUnauthorizedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
 import { ProgressReport, UserRole } from '@prisma/client';
@@ -13,6 +14,7 @@ import { RolesGuard } from 'src/_common/guards/role.guard';
 import { Roles } from 'src/_common/decorators/roles.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('refresh_token')
 @Controller('reports/progress')
 export class ProgressController {
   constructor(private readonly progressService: ProgressService) {}

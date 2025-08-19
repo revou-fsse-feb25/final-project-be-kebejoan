@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
@@ -29,6 +30,7 @@ import { UserRole } from '@prisma/client';
 // @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
+@ApiBearerAuth('refresh_token')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

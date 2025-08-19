@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
@@ -30,7 +31,7 @@ import { CreateProgressDto } from 'src/reports/progress/dto/create-progress.dto'
 
 @UseInterceptors(ClassSerializerInterceptor)
 @UseGuards(JwtAuthGuard, RolesGuard)
-@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('refresh_token')
 @Controller('users/me')
 export class UsersMeController {
   constructor(private readonly usersService: UsersMeService) {}

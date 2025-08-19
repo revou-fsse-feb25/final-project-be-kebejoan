@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   ApiUnauthorizedResponse,
@@ -27,6 +29,7 @@ import { CurrentUser } from 'src/_common/decorators/current-user.decorator';
 import { User, UserRole } from '@prisma/client';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('refresh_token')
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}

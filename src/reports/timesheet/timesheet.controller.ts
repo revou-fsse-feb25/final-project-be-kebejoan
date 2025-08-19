@@ -4,6 +4,7 @@ import {
   ApiOperation,
   ApiOkResponse,
   ApiUnauthorizedResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { TimesheetService } from './timesheet.service';
 import { TimesheetReport, UserRole } from '@prisma/client';
@@ -13,6 +14,7 @@ import { JwtAuthGuard } from 'src/_common/guards/jwt-auth.guard';
 import { Roles } from 'src/_common/decorators/roles.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('refresh_token')
 @Controller('reports/timesheet')
 export class TimesheetController {
   constructor(private readonly timesheetService: TimesheetService) {}
