@@ -9,7 +9,13 @@ import {
 import { hashPassword } from '../src/_common/utils/hashing';
 import { Decimal } from '@prisma/client/runtime/library';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DIRECT_URL, // 👈 override DATABASE_URL
+    },
+  },
+});
 
 async function main() {
   console.log('Creating phase lookup table...');
