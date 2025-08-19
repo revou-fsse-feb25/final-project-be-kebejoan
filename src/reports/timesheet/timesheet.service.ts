@@ -72,4 +72,12 @@ export class TimesheetService {
     }
     return await this.timesheetRepository.remove(id);
   }
+
+  async findByPmId(pmId: number): Promise<TimesheetReport[]> {
+    const reports = await this.timesheetRepository.findByPmId(pmId);
+    if (reports.length < 1) {
+      throw new NotFoundException('No data found');
+    }
+    return await this.timesheetRepository.findByPmId(pmId);
+  }
 }

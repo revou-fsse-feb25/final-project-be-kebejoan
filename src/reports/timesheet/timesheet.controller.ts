@@ -17,20 +17,20 @@ import { Roles } from 'src/_common/decorators/roles.decorator';
 export class TimesheetController {
   constructor(private readonly timesheetService: TimesheetService) {}
 
-  // @ApiOperation({ summary: 'Get many timesheet reports [PM ACCEESS]' })
-  // @ApiOkResponse({
-  //   description: 'Success find many timesheet reports',
-  //   type: TimesheetReportEntity,
-  //   isArray: true,
-  // })
-  // @ApiUnauthorizedResponse({
-  //   description: 'Unauthorized or not logged in as PM',
-  // })
-  // @Roles(UserRole.PM)
-  // @Get('pm/:pmId')
-  // async findByPmId(@Param('pmId') pmId: number) {
-  //   return await this.timesheetService.findByPmId(pmId);
-  // }
+  @ApiOperation({ summary: 'Get many timesheet reports [PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success find many timesheet reports',
+    type: TimesheetReportEntity,
+    isArray: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as PM',
+  })
+  @Roles(UserRole.PM, UserRole.ADMIN)
+  @Get('pm/:pmId')
+  async findByPmId(@Param('pmId') pmId: number) {
+    return await this.timesheetService.findByPmId(pmId);
+  }
 
   @ApiOperation({ summary: 'Get many timesheet reports [ADMIN ACCEESS]' })
   @ApiOkResponse({

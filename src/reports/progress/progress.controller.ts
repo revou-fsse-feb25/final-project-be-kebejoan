@@ -6,7 +6,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
-import { ProgressReport } from '@prisma/client';
+import { ProgressReport, UserRole } from '@prisma/client';
 import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { JwtAuthGuard } from 'src/_common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/_common/guards/role.guard';
@@ -16,6 +16,21 @@ import { Roles } from 'src/_common/decorators/roles.decorator';
 @Controller('reports/progress')
 export class ProgressController {
   constructor(private readonly progressService: ProgressService) {}
+
+  @ApiOperation({ summary: 'Get many timesheet reports [PM ACCEESS]' })
+  @ApiOkResponse({
+    description: 'Success find many timesheet reports',
+    type: ProgressReportEntity,
+    isArray: true,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized or not logged in as PM',
+  })
+  @Roles(UserRole.PM, UserRole.ADMIN)
+  @Get('pm/:pmId')
+  async findByPmId(@Param('pmId') pmId: number) {
+    return await this.progressService.findByPmId(pmId);
+  }
 
   @ApiOperation({ summary: 'Get many progress reports [ADMIN ACCEESS]' })
   @ApiOkResponse({

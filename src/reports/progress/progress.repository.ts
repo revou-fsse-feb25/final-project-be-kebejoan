@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, ProgressReport } from '@prisma/client';
+import { Prisma, ProgressReport, UserRole } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { CustomResponse } from 'src/_common/res/response';
@@ -44,5 +44,45 @@ export class ProgressRepository {
       status: 200,
       message: `Progress Report #${id} has been deleted`,
     };
+  }
+
+  async findByPmId(pmId: number): Promise<ProgressReport[]> {
+    return await this.prisma.progressReport.findMany({
+      where: {
+        project: {
+          assignedPMId: pmId, // only projects where this user is the PM
+        },
+        user: {
+          userRole: {
+            in: [UserRole.ENG_PE, UserRole.ENG_SE], // only reports from PE/SE
+          },
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            userRole: true,
+          },
+        },
+        project: {
+          select: {
+            id: true,
+            pjtNo: true,
+            pjtName: true,
+          },
+        },
+        phase: {
+          select: {
+            id: true,
+            phaseName: true,
+          },
+        },
+      },
+      orderBy: {
+        reportDate: 'desc',
+      },
+    });
   }
 }

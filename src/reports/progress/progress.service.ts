@@ -72,4 +72,12 @@ export class ProgressService {
     }
     return await this.progressRepository.remove(id);
   }
+
+  async findByPmId(pmId: number): Promise<ProgressReport[]> {
+    const reports = await this.progressRepository.findByPmId(pmId);
+    if (reports.length < 1) {
+      throw new NotFoundException('No data found');
+    }
+    return await this.progressRepository.findByPmId(pmId);
+  }
 }
