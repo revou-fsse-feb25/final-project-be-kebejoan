@@ -4,6 +4,7 @@ import { LoginDto } from './dto/login.dto';
 // import { RegisterDto } from './dto/register.dto';
 import { ApiOperation, ApiOkResponse } from '@nestjs/swagger';
 import { TokenItfExample } from './types/auth.service.interface';
+import { refreshTokenDto } from './dto/refresh.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -27,8 +28,8 @@ export class AuthController {
     example: TokenItfExample,
   })
   @Post('refresh')
-  async refresh(@Body() refreshToken: string) {
-    return this.authService.refreshToken(refreshToken);
+  async refresh(@Body() refreshDto: refreshTokenDto) {
+    return this.authService.refreshToken(refreshDto.refresh_token);
   }
 
   // @ApiOperation({ summary: 'Register User' })
