@@ -21,13 +21,15 @@ export class AuthService {
   ) {}
 
   private async generateToken(payloadDto: AuthPayloadDto): Promise<TokenItf> {
+    const accessTokenExpiration = this.configService.get(
+      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+      '900s' // 15m in seconds as fallback
+    );
+
     const [access_token, refresh_token] = await Promise.all([
       this.jwtService.signAsync(payloadDto, {
         secret: this.configService.get('JWT_SECRET'),
-        expiresIn: this.configService.get(
-          'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-          '15m'
-        ),
+        expiresIn: accessTokenExpiration,
       }),
       this.jwtService.signAsync(payloadDto, {
         secret: this.configService.get('JWT_SECRET'),
@@ -37,9 +39,15 @@ export class AuthService {
         ),
       }),
     ]);
+
     return {
       access_token,
       refresh_token,
+      // return expiration in seconds (NextAuth expects this)
+      expires_in:
+        typeof accessTokenExpiration === 'string'
+          ? parseInt(accessTokenExpiration)
+          : accessTokenExpiration,
     };
   }
 
@@ -73,6 +81,66 @@ export class AuthService {
     });
 
     return token;
+  }
+
+  async refreshToken(refreshToken: string): Promise<TokenItf> {
+    try {
+      // 1. Verify refresh token
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.get('JWT_SECRET'), // ⚠️ better to use a separate REFRESH_SECRET
+      });
+
+      // 2. Optional: check in DB if refresh token is still valid
+      const user = await this.usersRepository.findOne(payload.sub);
+      if (!user || user.refreshToken !== refreshToken) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      const accessTokenExpiration = this.configService.get(
+        'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+        '900s' // 15m in seconds as fallback
+      );
+
+      // 3. Issue new tokens
+      const [access_token, new_refresh_token] = await Promise.all([
+        this.jwtService.signAsync(
+          { sub: user.id, role: user.userRole },
+          {
+            secret: this.configService.get('JWT_SECRET'),
+            expiresIn: this.configService.get(
+              'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+              '15m'
+            ),
+          }
+        ),
+        this.jwtService.signAsync(
+          { sub: user.id, role: user.userRole },
+          {
+            secret: this.configService.get('JWT_SECRET'),
+            expiresIn: this.configService.get(
+              'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+              '30d'
+            ),
+          }
+        ),
+      ]);
+
+      // 4. Update DB with new refresh token (if you’re rotating)
+      user.refreshToken = new_refresh_token;
+      await this.usersRepository.update(user.id, user);
+
+      // 5. Return response
+      return {
+        access_token,
+        refresh_token: new_refresh_token,
+        expires_in:
+          typeof accessTokenExpiration === 'string'
+            ? parseInt(accessTokenExpiration)
+            : accessTokenExpiration,
+      };
+    } catch (e) {
+      throw new UnauthorizedException('Refresh token invalid or expired');
+    }
   }
 
   // async register(registerDto: RegisterDto) {

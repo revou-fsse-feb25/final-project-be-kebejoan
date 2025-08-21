@@ -20,6 +20,17 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
+  @ApiOperation({ summary: 'Refresh Token' })
+  @ApiOkResponse({
+    description: 'Success',
+    isArray: false,
+    example: TokenItfExample,
+  })
+  @Post('refresh')
+  async refresh(@Body() refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
+
   // @ApiOperation({ summary: 'Register User' })
   // @ApiOkResponse({
   //   description: 'Success',
