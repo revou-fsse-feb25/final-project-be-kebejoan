@@ -17,7 +17,14 @@ export class ProgressRepository {
       if (query?.pjtPhaseId) where.OR.push({ pjtPhaseId: query.pjtPhaseId });
     }
     console.log(where);
-    const findAll = await this.prisma.progressReport.findMany({ where });
+    const findAll = await this.prisma.progressReport.findMany({
+      where,
+      include: {
+        project: true,
+        user: true,
+        phase: true,
+      },
+    });
     return findAll;
   }
 

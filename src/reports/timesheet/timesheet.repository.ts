@@ -16,7 +16,14 @@ export class TimesheetRepository {
       if (query?.projectId) where.OR.push({ projectId: query.projectId });
       if (query?.pjtPhaseId) where.OR.push({ pjtPhaseId: query.pjtPhaseId });
     }
-    const findAll = await this.prisma.timesheetReport.findMany({ where });
+    const findAll = await this.prisma.timesheetReport.findMany({
+      where,
+      include: {
+        project: true,
+        user: true,
+        phase: true,
+      },
+    });
     return findAll;
   }
 
