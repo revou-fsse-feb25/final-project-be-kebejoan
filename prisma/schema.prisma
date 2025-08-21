@@ -136,7 +136,7 @@ model TimesheetReport {
   projectId   Int
   pjtPhaseId  Int
   reportDate  DateTime  @db.Date
-  hoursPerDay Decimal  @db.Decimal(5,2) // safer than float
+  hoursPerDay Int
   createdAt   DateTime @default(now())
 
   // Relations

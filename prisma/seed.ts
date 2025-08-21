@@ -280,7 +280,7 @@ async function main() {
   //           projectId: project.id,
   //           pjtPhaseId: phaseId,
   //           reportDate,
-  //           hoursPerDay: new Decimal(8.0),
+  //           hoursPerDay: 8,
   //         },
   //       });
 
