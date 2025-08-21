@@ -25,6 +25,7 @@ export class ProjectsRepository {
     return this.prisma.project.findMany({
       where,
       include: {
+        currentPhase: true,
         assignments: {
           include: {
             user: true,
@@ -35,11 +36,17 @@ export class ProjectsRepository {
   }
 
   async findOne(id: number): Promise<Project | null> {
-    return this.prisma.project.findUnique({ where: { id } });
+    return this.prisma.project.findUnique({
+      where: { id },
+      include: { currentPhase: true },
+    });
   }
 
   async findByPjtNo(pjtNo: string): Promise<Project | null> {
-    return this.prisma.project.findUnique({ where: { pjtNo } });
+    return this.prisma.project.findUnique({
+      where: { pjtNo },
+      include: { currentPhase: true },
+    });
   }
 
   async create(data: Prisma.ProjectCreateInput): Promise<Project> {
