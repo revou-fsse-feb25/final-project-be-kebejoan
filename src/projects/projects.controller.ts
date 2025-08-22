@@ -44,11 +44,7 @@ export class ProjectsController {
   })
   @Roles(UserRole.ADMIN, UserRole.PM)
   @Get('pjtNo/:pjtNo/check')
-  async checkIfPjtNoExists(
-    @CurrentUser() user: User,
-    @Param('pjtNo') pjtNo: string
-  ) {
-    console.log('user: ', user);
+  async checkIfPjtNoExists(@Param('pjtNo') pjtNo: string) {
     return this.projectsService.checkIfPjtNoExists(pjtNo);
   }
 
