@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { TokenItf } from './types/auth.service.interface';
 import { UsersRepository } from 'src/users/users.repository';
@@ -10,7 +6,6 @@ import { comparePassword, hashPassword } from 'src/_common/utils/hashing';
 import { AuthPayloadDto } from 'src/_common/res/auth-payload.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-// import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -86,9 +81,10 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<TokenItf> {
     try {
       // 1. Verify refresh token
-      const payload = (await this.jwtService.verifyAsync(refreshToken, {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: this.configService.get('JWT_SECRET'),
-      })) as AuthPayloadDto;
+      });
+      const { iat, exp, ...cleanPayload } = payload;
 
       const accessTokenExpiration = this.configService.get(
         'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
@@ -97,11 +93,11 @@ export class AuthService {
 
       // 2. Issue new tokens using full payload
       const [access_token, new_refresh_token] = await Promise.all([
-        this.jwtService.signAsync(payload, {
+        this.jwtService.signAsync(cleanPayload, {
           secret: this.configService.get('JWT_SECRET'),
           expiresIn: accessTokenExpiration,
         }),
-        this.jwtService.signAsync(payload, {
+        this.jwtService.signAsync(cleanPayload, {
           secret: this.configService.get('JWT_SECRET'),
           expiresIn: this.configService.get(
             'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
@@ -123,25 +119,4 @@ export class AuthService {
       throw new UnauthorizedException('Refresh token invalid or expired');
     }
   }
-
-  // async register(registerDto: RegisterDto) {
-  //   const { name, code, password } = registerDto;
-
-  //   const foundUser = await this.usersRepository.findBycode(code);
-
-  //   if (foundUser) {
-  //     throw new ConflictException('code is already registered');
-  //   }
-
-  //   const hashedPassword = await hashPassword(password);
-
-  //   const createdUser = await this.usersRepository.create({
-  //     name,
-  //     code,
-  //     password: hashedPassword,
-  //     role: Role.USER,
-  //   });
-
-  //   return createdUser;
-  // }
 }
