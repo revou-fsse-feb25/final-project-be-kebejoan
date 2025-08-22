@@ -85,38 +85,29 @@ export class AuthService {
 
   async refreshToken(refreshToken: string): Promise<TokenItf> {
     try {
-      // 1. Verify refresh token signature + expiry
-      const payload = await this.jwtService.verifyAsync(refreshToken, {
+      // 1. Verify refresh token
+      const payload = (await this.jwtService.verifyAsync(refreshToken, {
         secret: this.configService.get('JWT_SECRET'),
-      });
+      })) as AuthPayloadDto;
 
       const accessTokenExpiration = this.configService.get(
         'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
         '900s'
       );
 
-      // 2. Issue new tokens
+      // 2. Issue new tokens using full payload
       const [access_token, new_refresh_token] = await Promise.all([
-        this.jwtService.signAsync(
-          { sub: payload.sub, role: payload.role },
-          {
-            secret: this.configService.get('JWT_SECRET'),
-            expiresIn: this.configService.get(
-              'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
-              '15m'
-            ),
-          }
-        ),
-        this.jwtService.signAsync(
-          { sub: payload.sub, role: payload.role },
-          {
-            secret: this.configService.get('JWT_SECRET'),
-            expiresIn: this.configService.get(
-              'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-              '30d'
-            ),
-          }
-        ),
+        this.jwtService.signAsync(payload, {
+          secret: this.configService.get('JWT_SECRET'),
+          expiresIn: accessTokenExpiration,
+        }),
+        this.jwtService.signAsync(payload, {
+          secret: this.configService.get('JWT_SECRET'),
+          expiresIn: this.configService.get(
+            'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+            '30d'
+          ),
+        }),
       ]);
 
       // 3. Return response
