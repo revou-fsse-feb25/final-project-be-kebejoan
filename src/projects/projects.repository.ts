@@ -45,7 +45,12 @@ export class ProjectsRepository {
   async findByPjtNo(pjtNo: string): Promise<Project | null> {
     return this.prisma.project.findUnique({
       where: { pjtNo },
-      include: { currentPhase: true },
+      include: {
+        currentPhase: true,
+        assignedSE: true,
+        assignedPE: true,
+        assignedPM: true,
+      },
     });
   }
 

@@ -29,7 +29,14 @@ export class ProgressRepository {
   }
 
   async findOne(id: number): Promise<ProgressReport | null> {
-    return await this.prisma.progressReport.findUnique({ where: { id } });
+    return await this.prisma.progressReport.findUnique({
+      where: { id },
+      include: {
+        project: true,
+        user: true,
+        phase: true,
+      },
+    });
   }
 
   async create(

@@ -28,7 +28,14 @@ export class TimesheetRepository {
   }
 
   async findOne(id: number): Promise<TimesheetReport | null> {
-    return await this.prisma.timesheetReport.findUnique({ where: { id } });
+    return await this.prisma.timesheetReport.findUnique({
+      where: { id },
+      include: {
+        project: true,
+        user: true,
+        phase: true,
+      },
+    });
   }
 
   async create(
