@@ -57,4 +57,9 @@ Feel free to open and run the project on your local machine!
 
 ## API Contract
 
+<img src="./pictures/API-CONTRACT.png">
+<img src="./pictures/SWAGGER-UI.png">
+
 ## ERD
+
+<img src="./pictures/ERD.png">
