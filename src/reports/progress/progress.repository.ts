@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, ProgressReport, UserRole } from '@prisma/client';
+import { Prisma, ProgressReport, User, UserRole } from '@prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { CustomResponse } from 'src/_common/res/response';
@@ -7,6 +7,47 @@ import { CustomResponse } from 'src/_common/res/response';
 @Injectable()
 export class ProgressRepository {
   constructor(private prisma: PrismaService) {}
+
+  async findAllForPM(
+    userId?: number,
+    query?: ReportQueryDto
+  ): Promise<ProgressReport[]> {
+    const where: Prisma.ProgressReportWhereInput = {};
+
+    if (userId) {
+      where.project = {
+        assignments: {
+          some: {
+            project: {
+              OR: [{ assignedPMId: userId }],
+            },
+          },
+        },
+      };
+    }
+
+    if (query?.userId || query?.projectId || query?.pjtPhaseId) {
+      where.AND = [
+        {
+          OR: [
+            query?.userId ? { userId: query.userId } : undefined,
+            query?.projectId ? { projectId: query.projectId } : undefined,
+            query?.pjtPhaseId ? { pjtPhaseId: query.pjtPhaseId } : undefined,
+          ].filter(Boolean) as Prisma.ProgressReportWhereInput[],
+        },
+      ];
+    }
+    console.log(where);
+    const findAll = await this.prisma.progressReport.findMany({
+      where,
+      include: {
+        project: true,
+        user: true,
+        phase: true,
+      },
+    });
+    return findAll;
+  }
 
   async findAll(query?: ReportQueryDto): Promise<ProgressReport[]> {
     const where: ReportQueryDto = {};

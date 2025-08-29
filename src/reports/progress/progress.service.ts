@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ProgressRepository } from './progress.repository';
-import { Prisma, ProgressReport } from '@prisma/client';
+import { Prisma, ProgressReport, User, UserRole } from '@prisma/client';
 import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { CustomResponse } from 'src/_common/res/response';
 import { CreateProgressDto } from './dto/create-progress.dto';
@@ -14,8 +14,14 @@ import { UpdateProgressDto } from './dto/update-progress.dto';
 export class ProgressService {
   constructor(private readonly progressRepository: ProgressRepository) {}
 
-  async findAll(query?: ReportQueryDto): Promise<ProgressReport[]> {
-    const findAll = await this.progressRepository.findAll(query);
+  async findAll(user: User, query?: ReportQueryDto): Promise<ProgressReport[]> {
+    const isAdmin = user.userRole === UserRole.ADMIN;
+
+    const findAll = await this.progressRepository.findAllForPM(
+      isAdmin ? undefined : user.id,
+      query
+    );
+
     if (findAll.length < 1) {
       throw new NotFoundException('No data found');
     }

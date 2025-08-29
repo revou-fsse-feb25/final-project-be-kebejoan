@@ -7,11 +7,12 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
-import { ProgressReport, UserRole } from '@prisma/client';
+import { ProgressReport, User, UserRole } from '@prisma/client';
 import { ReportQueryDto } from 'src/reports/dto/query-report.dto';
 import { JwtAuthGuard } from 'src/_common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/_common/guards/role.guard';
 import { Roles } from 'src/_common/decorators/roles.decorator';
+import { CurrentUser } from 'src/_common/decorators/current-user.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth('refresh_token')
@@ -45,8 +46,11 @@ export class ProgressController {
   })
   @Roles(UserRole.ADMIN, UserRole.PM)
   @Get()
-  async findAll(@Query() query?: ReportQueryDto): Promise<ProgressReport[]> {
-    return await this.progressService.findAll(query);
+  async findAll(
+    @CurrentUser() user: User,
+    @Query() query?: ReportQueryDto
+  ): Promise<ProgressReport[]> {
+    return await this.progressService.findAll(user, query);
   }
 
   @ApiOperation({ summary: 'Get one progress report [ADMIN ACCEESS]' })
